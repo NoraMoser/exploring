@@ -11,3 +11,77 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1% 7%;
+  
+}
+
+.country-table {
+  width: 95%;
+}
+
+.country-table th{
+  padding: 1rem;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-align: left;
+}
+
+.country-table td {
+  padding: 1rem;
+  text-align: left;
+}
+
+.country-table tr {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.country-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.flag-image {
+  width: 10vw;
+  height: auto; 
+}
+
+@media (max-width: 768px) { /* This is to make it look ok on a cell phone */
+  table.country-table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  thead {
+    display: none;
+  }
+  
+  tr {
+    margin-bottom: 1rem;
+  }
+  
+  td {
+    margin-left: 40%;
+  }
+  
+  td img {
+    width: 2.4rem;           
+  }
+  
+  td::before {
+    position: absolute;
+    left: 1rem;
+    width: 45%;
+    white-space: nowrap;
+    font-weight: bold;
+    content: attr(data-label); 
+    /* This uses the data-labels on the td elements to become the card labels */
+  }
+}
