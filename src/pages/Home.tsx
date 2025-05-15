@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllCountries } from "../services/countriesAPI";
 
 //components
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
-import CountriesTable from "../components/CountriesTable";
+const CountriesTable = lazy(() => import("../components/CountriesTable"));
+
 
 const Home = () => {
   const {
@@ -20,7 +21,7 @@ const Home = () => {
   const [query, setQuery] = useState(""); //this is the value from the search input
   const [currentPage, setCurrentPage] = useState(1);
 
-  const amtCountriesPerPage = 10;
+  const amtCountriesPerPage = 12;
   const filteredCountries = useMemo(() => {
     //this caches filtered countries so it will run only with a change of one of the vars in the dependency array
     if (!countries) return [];
@@ -55,11 +56,14 @@ const Home = () => {
   return (
     <div>
       <FilterBar query={query} setQuery={handleSearchInput} />
-      <CountriesTable
-        filteredCountries={filteredCountries}
-        currentPage={currentPage}
-        amtCountriesPerPage={amtCountriesPerPage}
-      />
+      <Suspense fallback={<p>Loading countries...</p>}> 
+      {/* help with speed and gives a fallback ui */}
+        <CountriesTable
+          filteredCountries={filteredCountries}
+          currentPage={currentPage}
+          amtCountriesPerPage={amtCountriesPerPage}
+        />
+      </Suspense>
       <Pagination
         amtCountriesPerPage={amtCountriesPerPage}
         currentPage={currentPage}

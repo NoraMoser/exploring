@@ -16,12 +16,13 @@ code {
   width: 100%;
   overflow-x: auto;
   margin: 1% 7%;
-  
 }
 
 .country-table {
   width: 88%;
   margin-left:6%;
+  table-layout: fixed;
+  /* I added this because wrapping was affecting the largest contentful paint score */
 }
 
 .country-table th{
@@ -29,15 +30,21 @@ code {
   background-color: #f8f9fa;
   font-weight: 600;
   text-align: center;
+  width: 20%;
 }
 
 .country-table td {
   padding: 1rem;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 20%;
 }
 
 .country-table tr {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+  height: 50px;
 }
 
 .country-table tbody tr:hover {
@@ -47,23 +54,30 @@ code {
 
 .home-nav-bar {
   background-color: #272b28;
-  padding: 3%;
+  padding: 2%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.home-nav-bar h1 {
+.title-items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
   color: white;
   text-align: center;
-  font-size: 4em;
-  margin-left: 2%;
+  font-size: clamp(1.25rem, 2.5vw, 2rem); /* this is so the browswer can pick the optimal size and lighthouse will quit yelling at me */
+  margin-right: 4%;
+  display: swap;
 }
 
 .home-nav-bar input {
   width: 20%;
-  padding: 10px;
+  padding: 5px;
 }
 
 .pagination {
@@ -114,6 +128,12 @@ code {
   height: auto; 
 }
 
+.map-container {
+  height: 400px;
+  width: 100%;
+  position: relative;
+}
+
 .country-detail-information {
   text-align: center;
   margin: 2%;
@@ -143,10 +163,15 @@ code {
     margin-top: -2%;
   }
 
+  .map-container {
+    height: 200px;
+  }
+
   .flag-image {
-    width: 50vw;
+    width: 80px;
     height: auto; 
     margin-top: -13%;
+    display: block;
   }
 
   .country-detail-information {

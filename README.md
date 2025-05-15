@@ -1,47 +1,53 @@
-# Getting Started with Create React App
+# 🌍 Country Explorer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a lightweight React app to explore countries around the world. It uses the [REST Countries API](https://restcountries.com/) for real-time data and [Leaflet](https://leafletjs.com/) for interactive maps.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🚀 Getting Started
 
-### `npm start`
+### 1. Clone the repository
+### 2. Install dependencies
+### 3. Run the development server
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+## ✨ Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Search** countries by name  
+- **Sort** countries alphabetically  
+- **Paginated** list view (12 per page)  
+- **Responsive** design for mobile and desktop  
+- **Country detail pages** with:
+  - Official name  
+  - Flag  
+  - Region, capital, population  
+  - Interactive Leaflet map  
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🌐 APIs & Libraries
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### REST Countries API  
+Used to fetch country details like names, regions, flags, population, and coordinates.  
+🔗 [https://restcountries.com/](https://restcountries.com/)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Leaflet  
+Used for rendering dynamic and interactive maps on the detail page.  
+🔗 [https://leafletjs.com/](https://leafletjs.com/)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## ⚙️ Tech Stack
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **React** — UI framework  
+- **React Router** — Navigation  
+- **React Query** — Data fetching and caching  
+- **Leaflet** — Map rendering  
+- **CSS / Flexbox** — Layout and styling  
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## ⚡ Performance Notes
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-# exploring
+- Lazy loaded routes with `React.lazy` + `Suspense`  
+- Pagination improves load/render performance  
+- Images (flags, map tiles) use `loading="lazy"`  
+- Fonts and layout optimized for minimal layout shift  

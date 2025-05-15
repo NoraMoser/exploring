@@ -3,6 +3,7 @@ import { Country } from "../types/Country";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { relative } from "path";
 // You can find documentation here https://react-leaflet.js.org/
 //the L is so I can get the leaflet icon for the marker
 
@@ -27,7 +28,7 @@ const CountryMaps: React.FC<CountryMapProps> = ({ country }) => {
       center={country.latlng}
       zoom={5}
       scrollWheelZoom={false}
-      style={{ height: "400px", width: "100%" }}
+      className="map-container"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

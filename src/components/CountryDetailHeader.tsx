@@ -15,7 +15,7 @@ const CountryDetailHeader: React.FC<CountryDetailHeaderProps> = ({
   return (
     <nav className="country-detail-nav-bar">
       <div>
-        <button onClick={() => navigate(-1)}>←</button>
+        <button onClick={() => navigate('/')}>←</button>
         <h1>{country.name.common}</h1>
         <img
           className="flag-image"
