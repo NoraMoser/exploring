@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import FilterBar from "../components/FilterBar";
-import CountryRow from "../components/CountryRow";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllCountries } from "../services/countriesAPI";
-import { useNavigate } from "react-router-dom";
 
-function Home() {
+//components
+import FilterBar from "../components/FilterBar";
+import Pagination from "../components/Pagination";
+import CountriesTable from "../components/CountriesTable";
+
+const Home = () => {
   const {
     data: countries,
     isLoading,
@@ -14,47 +16,58 @@ function Home() {
     queryKey: ["countries"],
     queryFn: fetchAllCountries,
   });
-  const [query, setQuery] = useState("");
-  const navigate = useNavigate();
+  //using react query here to fetch the data from the function in countriesapi
+  const [query, setQuery] = useState(""); //this is the value from the search input
+  const [currentPage, setCurrentPage] = useState(1);
 
-  if (isLoading) return <p>Loading...</p>;
+  const amtCountriesPerPage = 10;
+  const filteredCountries = useMemo(() => {
+    //this caches filtered countries so it will run only with a change of one of the vars in the dependency array
+    if (!countries) return [];
+
+    const sortedCountries = countries.sort((a, b) =>
+      a.name.common.localeCompare(b.name.common)
+    ); //this puts names in alphabetical order
+
+    const filtered = query
+      ? sortedCountries.filter(
+          (country) =>
+            country.name.common
+              .toLowerCase()
+              .includes(query.trim().toLowerCase()) //no white space or upper case letters
+        )
+      : sortedCountries; //if the query is more than an empty string, we filter based on the countries that contain that letter
+
+    return filtered;
+  }, [countries, query]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query]); //if you are not on page one and try to search, it need to go back to page 1 or it won't work bc you might be on the wrong page to see the results
+
+  if (isLoading || !countries) return <p>Loading...</p>;
   if (error) return <p>Error loading countries.</p>;
 
-  function handleSelectCountry(id: string) {
-    navigate(`/country/${id}`)
-    //passing this id in the url which i have defined in the react router
-  }
-
-  function handleSearchInput(name: string) {
+  const handleSearchInput = (name: string) => {
     setQuery(name);
-  }
+  };
 
   return (
-    <div className="table-container">
-      <FilterBar query={query} setQuery={handleSearchInput}/>
-      <table className="country-table">
-        <thead>
-          <tr>
-            <th>Flag</th>
-            <th>Name</th>
-            <th>Official Name</th>
-            <th>Region</th>
-            <th>Population</th>
-            <th>Languages</th>
-          </tr>
-        </thead>
-        <tbody>
-          {countries?.map((country) => (
-            <CountryRow
-              key={country.cca3}
-              country={country}
-              onSelectCountry={handleSelectCountry}
-            />
-          ))}
-        </tbody>
-      </table>
+    <div>
+      <FilterBar query={query} setQuery={handleSearchInput} />
+      <CountriesTable
+        filteredCountries={filteredCountries}
+        currentPage={currentPage}
+        amtCountriesPerPage={amtCountriesPerPage}
+      />
+      <Pagination
+        amtCountriesPerPage={amtCountriesPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        filteredCountries={filteredCountries}
+      />
     </div>
   );
-}
+};
 
 export default Home;
