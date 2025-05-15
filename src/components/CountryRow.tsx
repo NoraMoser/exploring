@@ -28,7 +28,7 @@ const CountryRow: React.FC<CountryRowProps> = ({
       aria-label={`view details for ${country.name.common}`} //for screen readers ti be able to access
     >
       <td data-label="Common Name">{country.name.common}</td>
-      <td data-label="Official Name">{country.name.official ?? 'N/A'}</td> 
+      <td data-label="Official Name">{country.name.official ?? "N/A"}</td>
       {/* in case some countries do not have an official name */}
     </tr>
   );
