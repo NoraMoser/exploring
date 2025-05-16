@@ -5,6 +5,7 @@ import { fetchAllCountries } from "../services/countriesAPI";
 //components
 import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
+import ErrorBoundary from "../components/ErrorBoundary";
 const CountriesTable = lazy(() => import("../components/CountriesTable"));
 
 const Home = () => {
@@ -60,26 +61,32 @@ const Home = () => {
         <h2 id="filter-heading" className="visually-hidden">
           Filter countries
         </h2>
-        <FilterBar query={query} setQuery={handleSearchInput} />
+        <ErrorBoundary>
+          <FilterBar query={query} setQuery={handleSearchInput} />
+        </ErrorBoundary>
       </section>
       {/* for the benefit on screen readers */}
       <section aria-labelledby="countries-heading" className="main-content">
         <Suspense fallback={<p aria-live="polite">Loading countries...</p>}>
           {/* help with speed by lazy loading and gives a fallback ui while loading*/}
-          <CountriesTable
-            filteredCountries={filteredCountries}
-            currentPage={currentPage}
-            amtCountriesPerPage={amtCountriesPerPage}
-          />
+          <ErrorBoundary>
+            <CountriesTable
+              filteredCountries={filteredCountries}
+              currentPage={currentPage}
+              amtCountriesPerPage={amtCountriesPerPage}
+            />
+          </ErrorBoundary>
         </Suspense>
       </section>
       <nav aria-label="Pagination navigation">
-        <Pagination
-          amtCountriesPerPage={amtCountriesPerPage}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          filteredCountries={filteredCountries}
-        />
+        <ErrorBoundary>
+          <Pagination
+            amtCountriesPerPage={amtCountriesPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            filteredCountries={filteredCountries}
+          />
+        </ErrorBoundary>
       </nav>
     </main>
   );

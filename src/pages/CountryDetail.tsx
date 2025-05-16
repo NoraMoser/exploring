@@ -8,6 +8,7 @@ import CountryDetailHeader from "../components/CountryDetailHeader";
 import CountryDetailInfos from "../components/CountryDetailInfo";
 
 import { useQuery } from "@tanstack/react-query";
+import ErrorBoundary from "../components/ErrorBoundary";
 //https://tanstack.com/query/latest/docs/framework/react/overview for fetching data from the api
 
 const CountryDetail = () => {
@@ -34,21 +35,27 @@ const CountryDetail = () => {
         <h1 id="country-header" className="visually-hidden">
           Country Details Header
         </h1>
-        <CountryDetailHeader country={country} />
+        <ErrorBoundary>
+          <CountryDetailHeader country={country} />
+        </ErrorBoundary>
       </section>
 
       <section aria-labelledby="country-map">
         <h2 id="country-map" className="visually-hidden">
           Country location map
         </h2>
-        <CountryMaps country={country} />
+        <ErrorBoundary>
+          <CountryMaps country={country} />
+        </ErrorBoundary>
       </section>
 
       <section aria-labelledby="country-info">
         <h2 id="country-info" className="visually-hidden">
           Country details
         </h2>
-        <CountryDetailInfos country={country} />
+        <ErrorBoundary>
+          <CountryDetailInfos country={country} />
+        </ErrorBoundary>
       </section>
     </main>
   );

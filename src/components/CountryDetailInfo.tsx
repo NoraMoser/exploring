@@ -6,35 +6,46 @@ type CountryDetailInfoProps = {
   //single country object from the array of countries
 };
 const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
+  //gives the countries info that is given from the api
   return (
-    <div className="country-detail-information">
+    <section
+      className="country-detail-information"
+      aria-labelledby="country-details-heading"
+    >
       <div>
+        {/* flag image with alt text for screen readers */}
         <img
           className="flag-image"
-          src={country.coatOfArms.svg}
-          alt={`the coat of arms for the country ${country.name.common}`}
+          src={country.coatOfArms?.svg}
+          alt={`The coat of arms for the country ${country.name.common}`}
         />
-        <h2>
+
+        <h2 id="country-details-heading">
           <strong>Official Name: </strong>
           {country.name.official}
         </h2>
+
         <h3>
           <strong>Capital: </strong>
-          {country.capital ?? "N/A"}
+          {country.capital?.[0] ?? "N/A"}
         </h3>
+
         <h3>
           <strong>Region: </strong>
           {country.region ?? "N/A"}
         </h3>
+
         <h4>
           <strong>Sub-Region: </strong>
           {country.subregion ?? "N/A"}
         </h4>
+
         <p>
           <strong>Continent: </strong>
-          {country.continents ?? "N/A"}
+          {country.continents?.join(", ") ?? "N/A"}
         </p>
       </div>
+
       <div>
         <p>
           <strong>Languages: </strong>
@@ -42,28 +53,37 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
             ? Object.values(country.languages).join(", ")
             : "N/A"}
         </p>
+
         <p>
           <strong>Population: </strong>
-          {country.population ?? "N/A"}
+          {country.population?.toLocaleString() ?? "N/A"}
         </p>
+
         <p>
           <strong>Area: </strong>
-          {country.area ?? "N/A"}
+          {country.area ? `${country.area.toLocaleString()} km²` : "N/A"}
         </p>
-        {/* currencies is an array and we just want the values out of it (below) */}
-        {country.currencies &&
+
+        {/* loop through the currency object and show name and symbol */}
+        {country.currencies ? (
           Object.values(country.currencies).map((currency, index) => (
             <p key={index}>
               <strong>Currency: </strong>
               {currency.name} ({currency.symbol})
             </p>
-          ))}
+          ))
+        ) : (
+          <p>
+            <strong>Currency:</strong> N/A
+          </p>
+        )}
+
         <p>
           <strong>Timezone(s): </strong>
-          {country.timezones && country.timezones.join(", ")}
+          {country.timezones?.join(", ") ?? "N/A"}
         </p>
       </div>
-    </div>
+    </section>
   );
 };
 

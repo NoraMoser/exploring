@@ -7,8 +7,8 @@ This is a lightweight React app to explore countries around the world. It uses t
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
-### 2. Install dependencies
-### 3. Run the development server
+### 2. Install dependencies with npm install
+### 3. Run the development server with npm start
 
 
 
@@ -42,6 +42,7 @@ Used for rendering dynamic and interactive maps on the detail page.
 - **React** — UI framework  
 - **React Router** — Navigation  
 - **React Query** — Data fetching and caching  
+- **React Error Boundaries** - catching errors and displaying fallback UI
 - **Leaflet** — Map rendering  
 - **CSS / Flexbox** — Layout and styling  
 
@@ -51,3 +52,4 @@ Used for rendering dynamic and interactive maps on the detail page.
 - Pagination improves load/render performance  
 - Images (flags, map tiles) use `loading="lazy"`  
 - Fonts and layout optimized for minimal layout shift  
+- Accessability taken into consideration from  🔗 [https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA)

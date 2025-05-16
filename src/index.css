@@ -1,3 +1,11 @@
+
+/* Entire app!!! */
+.error-boundary {
+  /* fallback for errors */
+  text-align: center;
+  font-size: 2em;
+}
+
 .visually-hidden { 
   /* this is to hide stuff for the screen reader */
   position: absolute;
@@ -11,10 +19,13 @@
   border: 0;
 }
 
+/* Home page with table!!! */
 .table-container {
+  /* entire page with table on it */
   width: 100%;
   overflow-x: auto;
   margin: 1% 7%;
+    /* allows table to scroll horizontally on smaller screens */
 }
 
 .home-div {
@@ -50,6 +61,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* ensures long content doesn't break layout */
   width: 20%;
 }
 
@@ -107,6 +119,8 @@
   cursor: not-allowed;
 }
 
+
+/* Country Detail Pages!!! */
 .country-detail-nav-bar {
   background-color: #272b28;
   padding: 3%;
@@ -152,6 +166,8 @@
   margin: 5%;
 }
 
+
+/* Mobile/Responsive Area!!! */
 @media (max-width: 768px) { /* This is to make it look ok on a cell phone */
   .home-div {
     height: 100vh;         /* fallback for older browsers */
