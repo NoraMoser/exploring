@@ -7,19 +7,19 @@ import FilterBar from "../components/FilterBar";
 import Pagination from "../components/Pagination";
 const CountriesTable = lazy(() => import("../components/CountriesTable"));
 
-
 const Home = () => {
+  //main page that shows the table the all the countries listed on it
   const {
-    data: countries,
+    data: countries, //this is the entire list of countries in an array
     isLoading,
-    error,
+    error, //these two handle loading and error states
   } = useQuery({
     queryKey: ["countries"],
     queryFn: fetchAllCountries,
+    //using react query here to fetch the data from the function in countriesapi
   });
-  //using react query here to fetch the data from the function in countriesapi
   const [query, setQuery] = useState(""); //this is the value from the search input
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); //current page the user is on
 
   const amtCountriesPerPage = 12;
   const filteredCountries = useMemo(() => {
@@ -28,7 +28,7 @@ const Home = () => {
 
     const sortedCountries = countries.sort((a, b) =>
       a.name.common.localeCompare(b.name.common)
-    ); //this puts names in alphabetical order
+    ); //this puts names of countries in alphabetical order
 
     const filtered = query
       ? sortedCountries.filter(
@@ -50,27 +50,38 @@ const Home = () => {
   if (error) return <p>Error loading countries.</p>;
 
   const handleSearchInput = (name: string) => {
+    //callback that changes squery state when the user searcches in the search bar
     setQuery(name);
   };
 
   return (
-    <div>
-      <FilterBar query={query} setQuery={handleSearchInput} />
-      <Suspense fallback={<p>Loading countries...</p>}> 
-      {/* help with speed and gives a fallback ui */}
-        <CountriesTable
-          filteredCountries={filteredCountries}
-          currentPage={currentPage}
+    <main className="home-div">
+      <section aria-labelledby="filter-heading">
+        <h2 id="filter-heading" className="visually-hidden">
+          Filter countries
+        </h2>
+        <FilterBar query={query} setQuery={handleSearchInput} />
+      </section>
+      {/* for the benefit on screen readers */}
+      <section aria-labelledby="countries-heading" className="main-content">
+        <Suspense fallback={<p aria-live="polite">Loading countries...</p>}>
+          {/* help with speed by lazy loading and gives a fallback ui while loading*/}
+          <CountriesTable
+            filteredCountries={filteredCountries}
+            currentPage={currentPage}
+            amtCountriesPerPage={amtCountriesPerPage}
+          />
+        </Suspense>
+      </section>
+      <nav aria-label="Pagination navigation">
+        <Pagination
           amtCountriesPerPage={amtCountriesPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          filteredCountries={filteredCountries}
         />
-      </Suspense>
-      <Pagination
-        amtCountriesPerPage={amtCountriesPerPage}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        filteredCountries={filteredCountries}
-      />
-    </div>
+      </nav>
+    </main>
   );
 };
 

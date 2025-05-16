@@ -29,7 +29,7 @@ const CountriesTable: React.FC<CountriesTableProps> = ({
   };
 
   return (
-    <table className="country-table">
+    <table role="presentation"  className="country-table">
       <thead>
         <tr>
           <th>Common Name</th>
@@ -59,5 +59,5 @@ const CountriesTable: React.FC<CountriesTableProps> = ({
     </table>
   );
 };
-
+//this is the list of all the countries displayed in a table
 export default CountriesTable;

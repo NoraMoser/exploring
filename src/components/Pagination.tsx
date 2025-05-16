@@ -13,34 +13,43 @@ type PaginationProps = {
 };
 
 const Pagination: React.FC<PaginationProps> = ({
+  //this section has previous and next buttons and the user can see what page they are on
   currentPage,
   setCurrentPage,
   amtCountriesPerPage,
   filteredCountries,
 }) => {
+  const totalPages = Math.ceil(filteredCountries.length / amtCountriesPerPage);
+  //makes it easy to tell where i am gett\ing the total pages from
+  const handlePrevious = () => setCurrentPage(currentPage - 1);
+  const handleNext = () => setCurrentPage(currentPage + 1);
+  //set current page on click
   return (
-    <div className="pagination">
+    <nav
+      className="pagination"
+      role="navigation"
+      aria-label="Country pagination"
+    >
       <button
-        onClick={() => setCurrentPage(currentPage - 1)}
+        onClick={handlePrevious}
         disabled={currentPage === 1}
+        aria-label="Go to previous page"
       >
         Previous
       </button>
-      <span>
-        {/* math to tell how many total pages there are */}
-        Page {currentPage} of{" "} {/* prettier keeps doing it like this */}
-        {Math.ceil(filteredCountries.length / amtCountriesPerPage)}
+
+      <span aria-live="polite">
+        Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong>
       </span>
+
       <button
-        onClick={() => setCurrentPage(currentPage + 1)}
-        disabled={
-          currentPage ===
-          Math.ceil(filteredCountries.length / amtCountriesPerPage)
-        }
+        onClick={handleNext}
+        disabled={currentPage === totalPages}
+        aria-label="Go to next page"
       >
         Next
       </button>
-    </div>
+    </nav>
   );
 };
 

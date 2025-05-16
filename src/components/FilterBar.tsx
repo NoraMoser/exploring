@@ -8,20 +8,25 @@ type FilterProps = {
 };
 
 const FilterBar: React.FC<FilterProps> = ({ setQuery, query }) => {
+  //the nav bar on the home page with a search in it so the user can search for countries and the title of the app
   return (
-    <nav className="home-nav-bar">
-      <div className="title-items">
-      <h1 className="title">Exploring</h1> {/* i had this as a large size, but a lighthouse audit said it was affecting performance, so i made it smaller. */}
-      <div>🌎</div>
-      </div>
+    <header className="home-nav-bar" role="banner">
+      <h1 className="title">Exploring</h1>
+      {/* smaller for performance based on Lighthouse audit */}
+
+      <label htmlFor="country-search" className="visually-hidden">
+        Search for a country
+      </label>
       <input
+        id="country-search"
         className="search"
         type="text"
         placeholder="Search countries..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        aria-label="Search countries"
       />
-    </nav>
+    </header>
   );
 };
 
