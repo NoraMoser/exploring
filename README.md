@@ -35,6 +35,10 @@ Used to fetch country details like names, regions, flags, population, and coordi
 Used for rendering dynamic and interactive maps on the detail page.  
 🔗 [https://leafletjs.com/](https://leafletjs.com/)
 
+### React Testing Library
+Used to test the components and functions for this app
+🔗 [https://testing-library.com/docs/react-testing-library/intro/](https://testing-library.com/docs/react-testing-library/intro/)
+
 ---
 
 ## ⚙️ Tech Stack
@@ -45,6 +49,7 @@ Used for rendering dynamic and interactive maps on the detail page.
 - **React Error Boundaries** - catching errors and displaying fallback UI
 - **Leaflet** — Map rendering  
 - **CSS / Flexbox** — Layout and styling  
+- **React Testing Library** - Unit and Integration Tests
 
 ## ⚡ Performance Notes
 

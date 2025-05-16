@@ -26,6 +26,7 @@ const CountryRow: React.FC<CountryRowProps> = ({
       onKeyDown={handleKeyDown}
       style={{ cursor: "pointer" }}
       aria-label={`view details for ${country.name.common}`} //for screen readers ti be able to access
+      data-testid={`row-${country.cca3}`} //help with testing
     >
       <td data-label="Common Name" title={country.name.common}>
         {country.name.common}
