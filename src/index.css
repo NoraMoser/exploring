@@ -259,6 +259,10 @@ html, body, #root {
     width: 40vw;
   }
 
+  .pagination {
+    color: black;
+  }
+
   .country-detail-nav-bar div {
     flex-direction: column;
   }
