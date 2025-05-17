@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import FavoritesModal from "./FavoritesModal";
 
 type FilterProps = {
   setQuery: (query: string) => void;
@@ -9,8 +10,13 @@ type FilterProps = {
 
 const FilterBar: React.FC<FilterProps> = ({ setQuery, query }) => {
   //the nav bar on the home page with a search in it so the user can search for countries and the title of the app
+
+  const [showModal, setModal] = useState(false);
+  //set state as a boolean and tell modal to open or close
   return (
     <header className="home-nav-bar" role="banner">
+      <button className="view-favorites" onClick={() => setModal(true)}>View Favorites</button>
+      {showModal && <FavoritesModal onClose={() => setModal(false)} />}
       <h1 className="title">Exploring</h1>
       {/* smaller for performance based on Lighthouse audit */}
 

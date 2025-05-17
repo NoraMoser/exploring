@@ -1,5 +1,6 @@
 import React from "react";
 import { Country } from "../types/Country";
+import { useFavorites } from "../contexts/FavoritesContext";
 
 type CountryDetailInfoProps = {
   country: Country;
@@ -7,15 +8,32 @@ type CountryDetailInfoProps = {
 };
 const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
   //gives the countries info that is given from the api
+  const { addFavorite, favorites, removeFavorite } = useFavorites();
+  //so we are getting these because we defined it in the context
+
+  const isFavorite = favorites.some((item) => item.cca3 === country.cca3);
+  //basically checking that the new country is included> yay or nay
+
   return (
     <section
       className="country-detail-information"
       aria-labelledby="country-details-heading"
     >
+      <div className="favorite-button-wrapper">
+        <span id="favorite-label">Favorites button </span>
+        <button
+          onClick={() => {
+            isFavorite ? removeFavorite(country.cca3) : addFavorite(country);
+          }}
+          aria-labelledby="favorite-label"
+          aria-pressed={isFavorite}
+        >
+          {isFavorite ? "–" : "+"}
+        </button>
+      </div>
       <div>
-        {/* flag image with alt text for screen readers */}
         <img
-          className="flag-image"
+        className="coat-of-arms-image"
           src={country.coatOfArms?.svg}
           alt={`The coat of arms for the country ${country.name.common}`}
         />

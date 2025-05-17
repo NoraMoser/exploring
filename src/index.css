@@ -19,6 +19,26 @@
   border: 0;
 }
 
+/* Modal!!! */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal {
+  background: white;
+  padding: 1.5rem;
+  margin: 10% auto;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+}
+
+
 /* Home page with table!!! */
 .table-container {
   /* entire page with table on it */
@@ -86,6 +106,17 @@
   flex-direction: column;
 }
 
+.view-favorites {
+  position: fixed;
+    top: 1rem;
+    right: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color:#272b28;
+    color: white;
+    border: none;
+}
+
 .title {
   color: white;
   text-align: center;
@@ -146,9 +177,24 @@
   font-size: 3em;
 }
 
+.coat-of-arms-image,
 .flag-image {
   width: 10vw;
   height: auto; 
+}
+
+.favorite-button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2px;
+}
+
+.favorite-button-wrapper button {
+ background-color: #272b28;
+ color: white;
+ padding: 2px 5px;
 }
 
 .map-container {
@@ -204,6 +250,11 @@
     height: auto; 
     margin-top: -13%;
     display: block;
+  }
+
+  .coat-of-arms-image {
+    width: 80px;
+    height: auto; 
   }
 
   .country-detail-information {

@@ -11,4 +11,8 @@ module.exports = {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(react-leaflet|@react-leaflet/core)/)"
+  ],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   }
