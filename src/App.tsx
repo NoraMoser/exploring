@@ -11,7 +11,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       {/* wraps all components in error boundary so app is not broken with an error */}
-      <Router>
+      <Router basename="/exploring">
         {/* move from one page to the other */}
         <Suspense fallback={<p>Loading page...</p>}>
           {/* for while we're waiting on the lazy loading */}

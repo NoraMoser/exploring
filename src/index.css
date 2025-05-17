@@ -32,7 +32,7 @@
   background: white;
   padding: 1.5rem;
   margin: 10% auto;
-  width: 20%;
+  width: 55%;
   border-radius: 8px;
   position: relative;
 }
@@ -224,6 +224,10 @@
 /* Mobile/Responsive Area!!! */
 @media (max-width: 768px) {
   /* This is to make it look ok on a cell phone */
+
+  .modal {
+    width: 65%;
+  }
   .home-div {
     height: 100vh; /* fallback for older browsers */
     min-height: 100dvh; /* modern fix for mobile browsers */
