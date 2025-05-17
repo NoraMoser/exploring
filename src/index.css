@@ -1,4 +1,21 @@
 /* Entire app!!! */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.home-div {
+  background-color: #272b28;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .error-boundary {
   /* fallback for errors */
   text-align: center;
@@ -53,13 +70,6 @@
   overflow-x: auto;
   margin: 1% 7%;
   /* allows table to scroll horizontally on smaller screens */
-}
-
-.home-div {
-  background-color: #272b28;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
 .main-content {
