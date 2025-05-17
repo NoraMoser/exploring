@@ -242,9 +242,12 @@ html, body, #root {
     height: 100vh; /* fallback for older browsers */
     min-height: 100dvh; /* modern fix for mobile browsers */
     width: 100vw;
-    background-color: #272b28;
+    background-color: white;
   }
-
+  
+  .country-table {
+    color: black;
+  }
   .home-nav-bar {
     height: auto; /* modern fix for mobile browsers */
     width: 100vw;
