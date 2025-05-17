@@ -6,7 +6,7 @@ import type { Favorite } from "../types/Favorites";
 // Mock favorite item
 const mockCountry: Favorite = {
   name: { common: "Testland" },
-  cca3: "TST"
+  cca3: "TST",
 };
 
 // Test component using the context
@@ -26,19 +26,18 @@ const TestComponent = () => {
   );
 };
 
-// Test suite
 describe("FavoritesContext", () => {
-    it("starts with empty favorites", () => {
-        render(
-          <FavoritesProvider>
-            <TestComponent />
-          </FavoritesProvider>
-        );
-      
-        expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
-      });
-      
-  it("adds a favorite", () => {
+  test("starts with empty favorites", () => {
+    render(
+      <FavoritesProvider>
+        <TestComponent />
+      </FavoritesProvider>
+    );
+
+    expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
+  });
+
+  test("adds a favorite", () => {
     render(
       <FavoritesProvider>
         <TestComponent />
@@ -49,7 +48,7 @@ describe("FavoritesContext", () => {
     expect(screen.getByText("Testland")).toBeInTheDocument();
   });
 
-  it("removes a favorite", () => {
+  test("removes a favorite", () => {
     render(
       <FavoritesProvider>
         <TestComponent />
@@ -61,19 +60,19 @@ describe("FavoritesContext", () => {
 
     expect(screen.queryByText("Testland")).not.toBeInTheDocument();
   });
-  it("removing non-existent favorite does nothing", () => {
+
+  test("removing non-existent favorite does nothing", () => {
     render(
       <FavoritesProvider>
         <TestComponent />
       </FavoritesProvider>
     );
-  
+
     fireEvent.click(screen.getByText("Remove")); // remove before adding
     expect(screen.queryByRole("listitem")).not.toBeInTheDocument();
   });
-  
 
-  it("does not add duplicates", () => {
+  test("does not add duplicates", () => {
     render(
       <FavoritesProvider>
         <TestComponent />
@@ -85,15 +84,17 @@ describe("FavoritesContext", () => {
 
     expect(screen.getAllByText("Testland").length).toBe(1);
   });
+
   const BrokenComponent = () => {
     useFavorites();
     return null;
   };
-  
-  it("throws error if used outside FavoritesProvider", () => {
+
+  test("throws error if used outside FavoritesProvider", () => {
     // Wrap in a function to catch the error
     const renderBroken = () => render(<BrokenComponent />);
-    expect(renderBroken).toThrow("useFavorites must be used with Favorites Provider. :)");
+    expect(renderBroken).toThrow(
+      "useFavorites must be used with Favorites Provider. :)"
+    );
   });
-  
 });

@@ -5,7 +5,9 @@ import { FavoritesContext } from "../contexts/FavoritesContext";
 import { Favorite } from "../types/Favorites";
 
 // ✅ Custom context provider for test with state
-const CustomFavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const CustomFavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [favorites, setFavorites] = React.useState<Favorite[]>([
     {
       cca3: "USA",
@@ -14,24 +16,28 @@ const CustomFavoritesProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   ]);
 
   const addFavorite = (favorite: Favorite) => {
-    setFavorites((curr) =>
-      curr.some((f) => f.cca3 === favorite.cca3) ? curr : [...curr, favorite]
+    setFavorites((current) =>
+      current.some((item) => item.cca3 === favorite.cca3)
+        ? current
+        : [...current, favorite]
     );
   };
 
   const removeFavorite = (code: string) => {
-    setFavorites((curr) => curr.filter((f) => f.cca3 !== code));
+    setFavorites((current) => current.filter((item) => item.cca3 !== code));
   };
 
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite }}>
+    <FavoritesContext.Provider
+      value={{ favorites, addFavorite, removeFavorite }}
+    >
       {children}
     </FavoritesContext.Provider>
   );
-};
+}; //makes a favorites provider we can use for testing
 
 describe("FavoritesModal", () => {
-  it("renders with a favorite", () => {
+  test("renders with a favorite", () => {
     render(
       <CustomFavoritesProvider>
         <FavoritesModal onClose={jest.fn()} />
@@ -40,24 +46,25 @@ describe("FavoritesModal", () => {
 
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText("Your Exploring Wishlist")).toBeInTheDocument();
-    expect(screen.getByText("United States")).toBeInTheDocument();
+    expect(screen.getByText("United States")).toBeInTheDocument(); //item we mocked in the favorites
   });
 
-  it("removes a favorite when remove button is clicked", () => {
+  test("removes a favorite when remove button is clicked", () => {
     render(
       <CustomFavoritesProvider>
         <FavoritesModal onClose={jest.fn()} />
       </CustomFavoritesProvider>
     );
+    // click the remove button
+    fireEvent.click(
+      screen.getByRole("button", { name: /remove united states/i })
+    );
 
-    // Click the remove button
-    fireEvent.click(screen.getByRole("button", { name: /remove united states/i }));
-
-    // Expect to see the "No favorites yet" message
+    // expect to see the "No favorites yet" message
     expect(screen.getByText(/no favorites yet/i)).toBeInTheDocument();
   });
 
-  it("calls onClose when close button is clicked", () => {
+  test("calls onClose when close button is clicked", () => {
     const onClose = jest.fn();
 
     render(
@@ -66,7 +73,9 @@ describe("FavoritesModal", () => {
       </CustomFavoritesProvider>
     );
 
-    fireEvent.click(screen.getByRole("button", { name: /close favorites modal/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /close favorites modal/i })
+    );
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });

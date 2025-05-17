@@ -18,13 +18,12 @@ jest.mock("react-router-dom", () => {
   const actual = jest.requireActual("react-router-dom");
   return {
     ...actual,
-    useNavigate: () => mockedNavigate,
+    useNavigate: () => mockedNavigate, //have to mock this usenavigate since some components use it
   };
 });
 
 jest.mock("../services/countriesAPI", () => ({
-  //mock the countries api
-  fetchAllCountries: jest.fn(),
+  fetchAllCountries: jest.fn(), //this is the function in the service that gives su our array of data
 }));
 
 beforeEach(() => {
@@ -39,7 +38,7 @@ const createTestQueryClient = () =>
       },
     },
   });
-const queryClient = createTestQueryClient();
+const queryClient = createTestQueryClient(); //gotta do a fake browser router for the tests bc we wrap all components in router
 
 const renderWithRouter = (ui: React.ReactElement) =>
   render(
@@ -48,358 +47,238 @@ const renderWithRouter = (ui: React.ReactElement) =>
     </BrowserRouter>
   );
 
-//Home Page**********
-test("renders loading state initially", () => {
-  //before getting the api, makes sure the loading page is showing
-  renderWithRouter(<Home />);
-  expect(screen.getByText(/loading/i)).toBeInTheDocument();
-});
+describe("Home Page", () => {
+  test("renders loading state initially", () => {
+    renderWithRouter(<Home />);
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  });
 
-test("renders list of countries after fetch", async () => {
-  //wait for the api to load an then check for a name
-  renderWithRouter(<Home />);
-  // Wait for some country name from mockCountries to appear
-  await waitFor(() => {
-    const cells = screen.getAllByText("Canada"); //each common name is in both title and the written text
-    expect(cells.length).toBeGreaterThan(0);
+  test("renders list of countries after fetch", async () => {
+    renderWithRouter(<Home />);
+    await waitFor(() => {
+      const cells = screen.getAllByText("Canada");
+      expect(cells.length).toBeGreaterThan(0);
+    });
+  });
+
+  test("renders FilterBar component inside Home", () => {
+    renderWithRouter(<Home />);
+    const filterBarHeading = screen.getByRole("heading", {
+      name: /exploring/i,
+    });
+    expect(filterBarHeading).toBeInTheDocument();
+  });
+
+  test("renders error message on fetch failure", async () => {
+    (fetchAllCountries as jest.Mock).mockRejectedValueOnce(
+      new Error("API error")
+    );
+    renderWithRouter(<Home />);
+    await waitFor(() => {
+      expect(screen.getByText(/error/i)).toBeInTheDocument();
+    });
   });
 });
 
-test("renders FilterBar component inside Home", () => {
-  renderWithRouter(<Home />);
-  // For example, the FilterBar's heading "exploring"
-  const filterBarHeading = screen.getByRole("heading", { name: /exploring/i });
-  expect(filterBarHeading).toBeInTheDocument();
-});
-
-test("renders error message on fetch failure", async () => {
-  (fetchAllCountries as jest.Mock).mockRejectedValueOnce(
-    new Error("API error")
-  );
-  renderWithRouter(<Home />);
-  await waitFor(() => {
-    expect(screen.getByText(/error/i)).toBeInTheDocument();
+describe("FilterBar Component", () => {
+  test("renders heading from FilterBar with fake props", () => {
+    const fakeProps = { query: "Nora", setQuery: () => {} };
+    render(<FilterBar {...fakeProps} />);
+    const heading = screen.getByRole("heading", { name: /exploring/i });
+    expect(heading).toBeInTheDocument();
   });
-});
 
-//Filter Bar Component******
-test("renders heading from FilterBar with fake props", () => {
-  //want to make sure the main title is there
-  const fakeProps = {
-    query: "Nora",
-    setQuery: () => {},
-  };
-  render(<FilterBar {...fakeProps} />);
-  const heading = screen.getByRole("heading", { name: /exploring/i });
-  expect(heading).toBeInTheDocument();
-});
+  test("renders input with placeholder 'search countries...' in FilterBar", () => {
+    const fakeProps = { query: "Nora", setQuery: () => {} };
+    render(<FilterBar {...fakeProps} />);
+    const input = screen.getByPlaceholderText(/search countries.../i);
+    expect(input).toBeInTheDocument();
+  });
 
-test("renders input with placeholder 'search countries...' in FilterBar", () => {
-  const fakeProps = {
-    query: "Nora",
-    setQuery: () => {},
-  };
-  render(<FilterBar {...fakeProps} />);
-  const input = screen.getByPlaceholderText(/search countries.../i);
-  expect(input).toBeInTheDocument();
-});
-
-test("calls setQuery when input changes", () => {
-  //tests that the function is called when the user types in the input bar
-  const setQuery = jest.fn();
-  render(<FilterBar query="" setQuery={setQuery} />);
-
-  const input = screen.getByPlaceholderText(/search countries.../i);
-  fireEvent.change(input, { target: { value: "Nora" } });
-
-  expect(setQuery).toHaveBeenCalledWith("Nora");
-});
-
-test("opens and closes the FavoritesModal when View Favorites is clicked", () => {
+  test("calls setQuery when input changes", () => {
     const setQuery = jest.fn();
-  
+    render(<FilterBar query="" setQuery={setQuery} />);
+    const input = screen.getByPlaceholderText(/search countries.../i);
+    fireEvent.change(input, { target: { value: "Nora" } });
+    expect(setQuery).toHaveBeenCalledWith("Nora");
+  });
+
+  test("opens and closes the FavoritesModal when View Favorites is clicked", () => {
+    const setQuery = jest.fn();
     const favoritesMock: Favorite[] = [
-      {
-        cca3: "USA",
-        name: { common: "United States" },
-      },
+      { cca3: "USA", name: { common: "United States" } },
     ];
-  
     const addFavorite = jest.fn();
     const removeFavorite = jest.fn();
-  
+
     render(
-      <FavoritesContext.Provider value={{ favorites: favoritesMock, addFavorite, removeFavorite }}>
+      <FavoritesContext.Provider
+        value={{ favorites: favoritesMock, addFavorite, removeFavorite }}
+      >
         <FilterBar query="" setQuery={setQuery} />
       </FavoritesContext.Provider>
     );
-  
+
     const openButton = screen.getByRole("button", { name: /view favorites/i });
     fireEvent.click(openButton);
-  
+
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(screen.getByText(/your exploring wishlist/i)).toBeInTheDocument();
-  
-    const closeButton = screen.getByRole("button", { name: /close favorites modal/i });
+
+    const closeButton = screen.getByRole("button", {
+      name: /close favorites modal/i,
+    });
     fireEvent.click(closeButton);
-  
-    // Using waitFor since closing the modal might involve state transition
+
     waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
-  
-
-//CountriesTable Component**********
-
-test("renders a table with headings", () => {
-  const fakeProps = {
-    filteredCountries: mockCountries,
-    currentPage: 1,
-    amtCountriesPerPage: 10,
-  };
-  render(
-    <MemoryRouter>
-      <CountriesTable {...fakeProps} />
-    </MemoryRouter>
-  ); //you have to wrap in memory router due to useNavigate on this component
-  expect(
-    screen.getByRole("columnheader", { name: /common name/i })
-  ).toBeInTheDocument();
 });
 
-test("shows the correct country name after slicing", () => {
-  const fakeProps = {
-    filteredCountries: mockCountries,
-    currentPage: 1,
-    amtCountriesPerPage: 1,
-  };
-  render(
-    <MemoryRouter>
-      <CountriesTable {...fakeProps} />
-    </MemoryRouter>
-  ); //you have to wrap in memory router due to useNavigate on this component
-  const cells = screen.getAllByText("Canada"); //each common name is in both title and the written text
-  expect(cells.length).toBeGreaterThan(0);
-  expect(screen.queryByText("France")).not.toBeInTheDocument();
+describe("CountriesTable Component", () => {
+  test("renders a table with headings", () => {
+    const fakeProps = {
+      filteredCountries: mockCountries,
+      currentPage: 1,
+      amtCountriesPerPage: 10,
+    };
+    render(
+      <MemoryRouter>
+        <CountriesTable {...fakeProps} />
+      </MemoryRouter>
+    );
+    expect(
+      screen.getByRole("columnheader", { name: /common name/i })
+    ).toBeInTheDocument();
+  });
+
+  test("shows the correct country name after slicing", () => {
+    const fakeProps = {
+      filteredCountries: mockCountries,
+      currentPage: 1,
+      amtCountriesPerPage: 1,
+    };
+    render(
+      <MemoryRouter>
+        <CountriesTable {...fakeProps} />
+      </MemoryRouter>
+    );
+    const cells = screen.getAllByText("Canada");
+    expect(cells.length).toBeGreaterThan(0);
+    expect(screen.queryByText("France")).not.toBeInTheDocument();
+  });
+
+  test("shows no countries message when list is empty", () => {
+    const fakeProps = {
+      filteredCountries: [],
+      currentPage: 1,
+      amtCountriesPerPage: 10,
+    };
+    render(
+      <MemoryRouter>
+        <CountriesTable {...fakeProps} />
+      </MemoryRouter>
+    );
+    expect(screen.getByText(/sorry, no countries found/i)).toBeInTheDocument();
+  });
+
+  test("if list is not empty, do not show no countries message", () => {
+    const fakeProps = {
+      filteredCountries: mockCountries,
+      currentPage: 1,
+      amtCountriesPerPage: 10,
+    };
+    render(
+      <MemoryRouter>
+        <CountriesTable {...fakeProps} />
+      </MemoryRouter>
+    );
+    expect(
+      screen.queryByText(/sorry, no countries found/i)
+    ).not.toBeInTheDocument();
+  });
+
+  test("navigates to country detail on row click", () => {
+    const fakeProps = {
+      filteredCountries: mockCountries,
+      currentPage: 1,
+      amtCountriesPerPage: 10,
+    };
+    render(
+      <MemoryRouter>
+        <CountriesTable {...fakeProps} />
+      </MemoryRouter>
+    );
+    const row = screen.getByTestId("row-CAN");
+    fireEvent.click(row);
+    expect(mockedNavigate).toHaveBeenCalledWith("/country/CAN");
+  });
 });
 
-test("shows no countries message when list is empty", () => {
-  const fakeProps = {
-    filteredCountries: [],
-    currentPage: 1,
-    amtCountriesPerPage: 10,
-  };
-  render(
-    <MemoryRouter>
-      <CountriesTable {...fakeProps} />
-    </MemoryRouter>
-  );
-  expect(screen.getByText(/sorry, no countries found/i)).toBeInTheDocument();
-});
+describe("CountryRow Component", () => {
+  test("calls onSelectCountry when row is clicked", () => {
+    const mockSelectCountry = jest.fn();
+    const fakeProps = {
+      country: mockCountries[0],
+      onSelectCountry: mockSelectCountry,
+    };
+    render(
+      <MemoryRouter>
+        <CountryRow {...fakeProps} />
+      </MemoryRouter>
+    );
+    const row = screen.getByTestId("row-CAN");
+    fireEvent.click(row);
+    expect(mockSelectCountry).toHaveBeenCalledWith("CAN");
+  });
 
-test("if list is not empty, do not show no countries message when list is empty", () => {
-  const fakeProps = {
-    filteredCountries: mockCountries,
-    currentPage: 1,
-    amtCountriesPerPage: 10,
-  };
-  render(
-    <MemoryRouter>
-      <CountriesTable {...fakeProps} />
-    </MemoryRouter>
-  );
-  expect(
-    screen.queryByText(/sorry, no countries found/i)
-  ).not.toBeInTheDocument();
-});
+  test("calls onSelectCountry when Enter key is pressed", () => {
+    const mockSelect = jest.fn();
+    const fakeProps = {
+      country: mockCountries[0],
+      onSelectCountry: mockSelect,
+    };
+    render(
+      <MemoryRouter>
+        <CountryRow {...fakeProps} />
+      </MemoryRouter>
+    );
+    const row = screen.getByTestId("row-CAN");
+    row.focus();
+    fireEvent.keyDown(row, { key: "Enter", code: "Enter", charCode: 13 });
+    expect(mockSelect).toHaveBeenCalledWith("CAN");
+  });
 
-test("navigates to country detail on row click", () => {
-  //mocked useNavigate above so just making sure it is working
-  const fakeProps = {
-    filteredCountries: mockCountries,
-    currentPage: 1,
-    amtCountriesPerPage: 10,
-  };
-  render(
-    <MemoryRouter>
-      <CountriesTable {...fakeProps} />
-    </MemoryRouter>
-  );
-  const row = screen.getByTestId("row-CAN");
-  fireEvent.click(row);
-  expect(mockedNavigate).toHaveBeenCalledWith("/country/CAN");
-});
+  test("does not call onSelectCountry when non-Enter key is pressed", () => {
+    const mockSelect = jest.fn();
+    const fakeProps = {
+      country: mockCountries[0],
+      onSelectCountry: mockSelect,
+    };
+    render(
+      <MemoryRouter>
+        <CountryRow {...fakeProps} />
+      </MemoryRouter>
+    );
+    const row = screen.getByTestId("row-CAN");
+    row.focus();
+    fireEvent.keyDown(row, { key: "Space", code: "Space" });
+    expect(mockSelect).not.toHaveBeenCalled();
+  });
 
-//CountryRow Component*********
-
-test("if select country is called when a row item is clicked", () => {
-  const mockSelectCountry = jest.fn();
-  const fakeProps = {
-    country: mockCountries[0],
-    onSelectCountry: mockSelectCountry,
-  };
-  render(
-    <MemoryRouter>
-      <CountryRow {...fakeProps} />
-    </MemoryRouter>
-  );
-  const row = screen.getByTestId("row-CAN");
-  fireEvent.click(row);
-  expect(mockSelectCountry).toHaveBeenCalledWith("CAN");
-});
-
-test("calls onSelectCountry when Enter key is pressed", () => {
-  //making sure keyboard command works and not just click
-  const mockSelect = jest.fn();
-  const fakeProps = {
-    country: mockCountries[0],
-    onSelectCountry: mockSelect,
-  };
-  render(
-    <MemoryRouter>
-      <CountryRow {...fakeProps} />
-    </MemoryRouter>
-  );
-  const row = screen.getByTestId("row-CAN");
-  row.focus();
-  fireEvent.keyDown(row, { key: "Enter", code: "Enter", charCode: 13 });
-  expect(mockSelect).toHaveBeenCalledWith("CAN");
-});
-
-test("does not call onSelectCountry when Enter key is not pressed", () => {
-  //making sure keyboard command works and not just click
-  const mockSelect = jest.fn();
-  const fakeProps = {
-    country: mockCountries[0],
-    onSelectCountry: mockSelect,
-  };
-  render(
-    <MemoryRouter>
-      <CountryRow {...fakeProps} />
-    </MemoryRouter>
-  );
-  const row = screen.getByTestId("row-CAN");
-  row.focus();
-  fireEvent.keyDown(row, { key: "Space", code: "Space" });
-
-  expect(mockSelect).not.toHaveBeenCalled();
-});
-
-
-test("renders the common and official names", () => {
-  const mockSelect = jest.fn();
-  const fakeProps = {
-    country: mockCountries[0],
-    onSelectCountry: mockSelect,
-  };
-  render(
-    <MemoryRouter>
-      <CountryRow {...fakeProps} />
-    </MemoryRouter>
-  );
-  const common = screen.getAllByText("Canada"); //each common name is in both title and the written text
-  expect(common.length).toBeGreaterThan(0);
-  const official = screen.getAllByText("Canadadada"); //each official name is in both title and the written text
-  expect(official.length).toBeGreaterThan(0);
-});
-
-test("row is keyboard accessible", () => {
-  const mockSelect = jest.fn();
-  const fakeProps = {
-    country: mockCountries[0],
-    onSelectCountry: mockSelect,
-  };
-  render(
-    <MemoryRouter>
-      <CountryRow {...fakeProps} />
-    </MemoryRouter>
-  );
-  const row = screen.getByTestId("row-CAN");
-  expect(row).toHaveAttribute("tabIndex", "0");
-});
-
-test("matches snapshot", () => {
-  const { container } = render(
-    <MemoryRouter>
-      <CountryRow country={mockCountries[0]} onSelectCountry={() => {}} />
-    </MemoryRouter>
-  );
-
-  expect(container).toMatchSnapshot();
-});
-
-//Pagination Component******
-test("renders correct number of page buttons", () => {
-  render(
-    <Pagination
-      currentPage={1}
-      setCurrentPage={() => {}}
-      amtCountriesPerPage={10}
-      filteredCountries={mockCountries}
-    />
-  );
-
-  const currPage = screen.getAllByText("1");
-  expect(currPage.length).toBeGreaterThan(0);
-  const totalPages = screen.getAllByText("1");
-  expect(totalPages.length).toBeGreaterThan(0); //for different amounts, put more in the mock
-});
-
-test("calls setCurrent Page on Next button click", () => {
-  const mockPageChange = jest.fn();
-  render(
-    <Pagination
-      currentPage={1}
-      setCurrentPage={mockPageChange}
-      amtCountriesPerPage={1}
-      filteredCountries={mockCountries}
-    />
-  );
-
-  fireEvent.click(screen.getByText(/next/i));
-  expect(mockPageChange).toHaveBeenCalledWith(2);
-});
-
-test("calls setCurrent Page on Prev button click", () => {
-  const mockPageChange = jest.fn();
-  render(
-    <Pagination
-      currentPage={2}
-      setCurrentPage={mockPageChange}
-      amtCountriesPerPage={1}
-      filteredCountries={mockCountries}
-    />
-  );
-
-  fireEvent.click(screen.getByText(/previous/i));
-  expect(mockPageChange).toHaveBeenCalledWith(1);
-});
-
-test("Prev Button is disabled", () => {
-  const mockPageChange = jest.fn();
-  render(
-    <Pagination
-      currentPage={1}
-      setCurrentPage={mockPageChange}
-      amtCountriesPerPage={1}
-      filteredCountries={mockCountries}
-    />
-  );
-
-  expect(screen.getByText(/previous/i)).toBeDisabled();
-});
-
-test("Next Button is disabled", () => {
-  const mockPageChange = jest.fn();
-  render(
-    <Pagination
-      currentPage={2}
-      setCurrentPage={mockPageChange}
-      amtCountriesPerPage={1}
-      filteredCountries={mockCountries}
-    />
-  );
-
-  expect(screen.getByText(/next/i)).toBeDisabled();
+  test("renders the common and official names", () => {
+    const mockSelect = jest.fn();
+    const fakeProps = {
+      country: mockCountries[0],
+      onSelectCountry: mockSelect,
+    };
+    render(
+      <MemoryRouter>
+        <CountryRow {...fakeProps} />
+      </MemoryRouter>
+    );
+    const common = screen.getAllByText("Canada");
+    expect(common.length).toBeGreaterThan(0);
+  });
 });

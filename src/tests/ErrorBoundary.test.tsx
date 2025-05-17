@@ -2,6 +2,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import ErrorBoundary from "../components/ErrorBoundary";
+import CountryDetailInfos from "../components/CountryDetailInfo";
+import { mockCountries } from "../mocks/mockCountries";
+
+const mockCountry = mockCountries[0]; //importing this so i can use it in the country details info component
 
 // Test component that throws
 const ProblemChild = () => {
@@ -20,7 +24,6 @@ describe("ErrorBoundary", () => {
 
   test("catches error and displays fallback UI", () => {
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
-
     render(
       <ErrorBoundary>
         <ProblemChild />
@@ -30,14 +33,14 @@ describe("ErrorBoundary", () => {
     expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /something unexpected happened/i })).toBeInTheDocument();
     expect(screen.getByText(/boom/i)).toBeInTheDocument();
-    
 
     spy.mockRestore();
   });
+
   test("resets error when key changes", () => {
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
-  
-    // First render with ProblemChild to cause error
+
+    // first render with ProblemChild to cause error
     const { rerender } = render(
       <ErrorBoundary>
         <ProblemChild />
@@ -45,17 +48,31 @@ describe("ErrorBoundary", () => {
     );
   
     expect(screen.getByRole("alert")).toBeInTheDocument();
-  
-    // Re-render with new key and normal children
+    // rerender with new key and normal children
     rerender(
       <ErrorBoundary key="reset">
         <p>Recovered!</p>
       </ErrorBoundary>
     );
   
-    expect(screen.getByText("Recovered!")).toBeInTheDocument();
+    expect(screen.getByText("Recovered!")).toBeInTheDocument(); //checking if error goes away after rerender
   
     spy.mockRestore();
   });
+
+  test("catches context error from component missing provider", () => {
+    const spy = jest.spyOn(console, "error").mockImplementation(() => {});
   
+    render(
+      <ErrorBoundary>
+        <CountryDetailInfos country={mockCountry} />
+      </ErrorBoundary>
+    );
+  
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /something unexpected happened/i })).toBeInTheDocument();
+    expect(screen.getByText(/useFavorites must be used with Favorites Provider/i)).toBeInTheDocument(); //check that the user gets the warning if they us favorites context outside provider
+  
+    spy.mockRestore();
+  });
 });
