@@ -19,18 +19,6 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
       className="country-detail-information"
       aria-labelledby="country-details-heading"
     >
-      <div className="favorite-button-wrapper">
-        <span id="favorite-label">Favorites button </span>
-        <button
-          onClick={() => {
-            isFavorite ? removeFavorite(country.cca3) : addFavorite(country);
-          }}
-          aria-labelledby="favorite-label"
-          aria-pressed={isFavorite}
-        >
-          {isFavorite ? "–" : "+"}
-        </button>
-      </div>
       <div>
         <img
         className="coat-of-arms-image"
@@ -100,6 +88,19 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
           <strong>Timezone(s): </strong>
           {country.timezones?.join(", ") ?? "N/A"}
         </p>
+      </div>
+
+      <div className="favorite-button-wrapper">
+        <span id="favorite-label">{isFavorite ? "Remove from Favorites" : "Add to Favorites" } </span>
+        <button
+          onClick={() => {
+            isFavorite ? removeFavorite(country.cca3) : addFavorite(country);
+          }}
+          aria-labelledby="favorite-label"
+          aria-pressed={isFavorite}
+        >
+          {isFavorite ? "🩶" : "❤️"}
+        </button>
       </div>
     </section>
   );

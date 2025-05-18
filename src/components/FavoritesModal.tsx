@@ -27,12 +27,12 @@ const FavoritesModal: React.FC<FavoritesModalProps> = ({ onClose }) => {
           <ul>
             {favorites.map((country) => (
               <li key={country.cca3}>
-                {`${country.name.common} `} 
+                {`${country.name.common}     `} 
                 <button
                   onClick={() => removeFavorite(country.cca3)}
                   aria-label={`Remove ${country.name.common} from favorites`}
                 >
-                  ❎
+                  ❌
                 </button>
               </li>
             ))}
