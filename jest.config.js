@@ -15,4 +15,8 @@ module.exports = {
     "node_modules/(?!(react-leaflet|@react-leaflet/core)/)"
   ],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/mocks/imageMock.ts',
+  },//have to do this so tests using leaflet will pass
   }

@@ -281,4 +281,76 @@ describe("CountryRow Component", () => {
     const common = screen.getAllByText("Canada");
     expect(common.length).toBeGreaterThan(0);
   });
+
+});
+describe("Pagination", () => {
+  it("renders current and total page count", () => {
+    render(
+      <Pagination
+        currentPage={2}
+        setCurrentPage={jest.fn()}
+        amtCountriesPerPage={10}
+        filteredCountries={mockCountries}
+      />
+    );
+    expect(
+      screen.getByText((content, element) =>
+        element?.textContent === "Page 2 of 1"
+      )
+    ).toBeInTheDocument();
+    
+  });
+
+  it("disables Previous button on first page", () => {
+    render(
+      <Pagination
+        currentPage={1}
+        setCurrentPage={jest.fn()}
+        amtCountriesPerPage={10}
+        filteredCountries={mockCountries}
+      />
+    );
+    expect(screen.getByRole("button", { name: /previous/i })).toBeDisabled();
+  });
+
+  it("disables Next button on last page", () => {
+    render(
+      <Pagination
+        currentPage={1}
+        setCurrentPage={jest.fn()}
+        amtCountriesPerPage={10}
+        filteredCountries={mockCountries}
+      />
+    );
+    expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
+  });
+
+  it("calls setCurrentPage with next page on Next click", () => {
+    const setCurrentPageMock = jest.fn();
+    render(
+      <Pagination
+        currentPage={1}
+        setCurrentPage={setCurrentPageMock}
+        amtCountriesPerPage={1} //only 2 mock countries
+        filteredCountries={mockCountries}
+      />
+    );
+    fireEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(setCurrentPageMock).toHaveBeenCalledWith(2);
+  });
+
+  it("calls setCurrentPage with previous page on Previous click", () => {
+    const setCurrentPageMock = jest.fn();
+    render(
+      <Pagination
+        currentPage={2}
+        setCurrentPage={setCurrentPageMock}
+        amtCountriesPerPage={1}
+        filteredCountries={mockCountries}
+      />
+    );
+    fireEvent.click(screen.getByRole("button", { name: /previous/i }));
+    expect(setCurrentPageMock).toHaveBeenCalledWith(1);
+  });
+
 });

@@ -20,11 +20,14 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
       aria-labelledby="country-details-heading"
     >
       <div>
-        <img
-        className="coat-of-arms-image"
-          src={country.coatOfArms?.svg}
-          alt={`The coat of arms for the country ${country.name.common}`}
-        />
+        {country.coatOfArms?.svg && country.coatOfArms.svg.trim() !== "" && (
+          <img
+            className="coat-of-arms-image"
+            src={country.coatOfArms.svg}
+            alt={`The coat of arms for the country ${country.name.common}`}
+          />
+        )}
+        {/* this is so if the svg is an empty string, the img is not rendered */}
 
         <h2 id="country-details-heading">
           <strong>Official Name: </strong>
@@ -55,14 +58,14 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
       <div>
         <p>
           <strong>Languages: </strong>
-          {country.languages
+          {country.languages && Object.keys(country.languages).length > 0 //empty obj in js is truthy so gotta do .length
             ? Object.values(country.languages).join(", ")
             : "N/A"}
         </p>
 
         <p>
           <strong>Population: </strong>
-          {country.population?.toLocaleString() ?? "N/A"}
+          {country.population > 0 ? country.population.toLocaleString() : "N/A"}
         </p>
 
         <p>
@@ -71,7 +74,7 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
         </p>
 
         {/* loop through the currency object and show name and symbol */}
-        {country.currencies ? (
+        {Object.keys(country.currencies).length > 0 ? (
           Object.values(country.currencies).map((currency, index) => (
             <p key={index}>
               <strong>Currency: </strong>
@@ -91,7 +94,9 @@ const CountryDetailInfos: React.FC<CountryDetailInfoProps> = ({ country }) => {
       </div>
 
       <div className="favorite-button-wrapper">
-        <span id="favorite-label">{isFavorite ? "Remove from Favorites" : "Add to Favorites" } </span>
+        <span id="favorite-label">
+          {isFavorite ? "Remove from Favorites" : "Add to Favorites"}{" "}
+        </span>
         <button
           onClick={() => {
             isFavorite ? removeFavorite(country.cca3) : addFavorite(country);
