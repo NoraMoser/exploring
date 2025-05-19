@@ -147,19 +147,19 @@ describe("CountryDetailHeader", () => {
 });
 
 describe("CountryMaps", () => {
-  it('renders the map container', () => {
+  test('renders the map container', () => {
     render(<CountryMaps country={mockCountry} />);
     const mapContainer = screen.getByLabelText(/Map of Canada/i);
     expect(mapContainer).toBeInTheDocument();
   });
 
-  it('uses correct aria-label for accessibility', () => {
+  test('uses correct aria-label for accessibility', () => {
     render(<CountryMaps country={mockCountry} />);
     const mapContainer = screen.getByLabelText('Map of Canada');
     expect(mapContainer).toBeVisible();
   });
 
-  it('does not render capital or coordinates text', () => {
+  test('does not render capital or coordinates text', () => {
     render(<CountryMaps country={mockCountry} />);
     expect(screen.queryByText(/Capital:/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Latitude:/i)).not.toBeInTheDocument();

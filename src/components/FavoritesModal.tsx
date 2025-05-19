@@ -9,7 +9,7 @@ type FavoritesModalProps = {
 const FavoritesModal: React.FC<FavoritesModalProps> = ({ onClose }) => {
   //modal to show the favorites information
   const { favorites, removeFavorite } = useFavorites();
-  //getting this from the context
+  //getting this from the context favorites is the array with name and cc3 for the countries that the user favorited and remove is the funt filtering out the removed one
 
   return (
     <div

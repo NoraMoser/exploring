@@ -4,7 +4,7 @@ import FavoritesModal from "../components/FavoritesModal";
 import { FavoritesContext } from "../contexts/FavoritesContext";
 import { Favorite } from "../types/Favorites";
 
-// ✅ Custom context provider for test with state
+// custom context provider for test with state
 const CustomFavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {

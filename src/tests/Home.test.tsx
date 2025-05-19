@@ -284,7 +284,7 @@ describe("CountryRow Component", () => {
 
 });
 describe("Pagination", () => {
-  it("renders current and total page count", () => {
+  test("renders current and total page count", () => {
     render(
       <Pagination
         currentPage={2}
@@ -301,7 +301,7 @@ describe("Pagination", () => {
     
   });
 
-  it("disables Previous button on first page", () => {
+  test("disables Previous button on first page", () => {
     render(
       <Pagination
         currentPage={1}
@@ -313,7 +313,7 @@ describe("Pagination", () => {
     expect(screen.getByRole("button", { name: /previous/i })).toBeDisabled();
   });
 
-  it("disables Next button on last page", () => {
+  test("disables Next button on last page", () => {
     render(
       <Pagination
         currentPage={1}
@@ -325,7 +325,7 @@ describe("Pagination", () => {
     expect(screen.getByRole("button", { name: /next/i })).toBeDisabled();
   });
 
-  it("calls setCurrentPage with next page on Next click", () => {
+  test("calls setCurrentPage with next page on Next click", () => {
     const setCurrentPageMock = jest.fn();
     render(
       <Pagination
@@ -339,7 +339,7 @@ describe("Pagination", () => {
     expect(setCurrentPageMock).toHaveBeenCalledWith(2);
   });
 
-  it("calls setCurrentPage with previous page on Previous click", () => {
+  test("calls setCurrentPage with previous page on Previous click", () => {
     const setCurrentPageMock = jest.fn();
     render(
       <Pagination
